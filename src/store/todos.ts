@@ -1,6 +1,6 @@
 import { action, computed, observable } from 'mobx';
 
-interface TodoList {
+export interface TodoList {
   name: string,
   priority: string
 }
