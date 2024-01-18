@@ -17,10 +17,11 @@ import {
 }
     from  '@chakra-ui/react'
 import {useForm} from "react-hook-form";
+import {loginApi} from "../../api/api.ts";
 
 interface FormData {
     email: string;
-    name: string;
+    pass: string;
 }
 
 export function Login() {
@@ -28,13 +29,17 @@ export function Login() {
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const onSubmit = (data: FormData) => {
+        sessionStorage.setItem('user', data.email)
+        document.cookie = `username=${JSON.stringify(data)}; expires=Thu, 21 Dec 2023 19:45:00 UTC; path=/`;
+        console.log(JSON.parse(document.cookie.split(';')[0].split('=')[1]))
         console.log(data);
+        loginApi({email: data.email, password: data.pass}).then((res) => console.log(res))
     };
 
     return (
         <>
             <Center h={'100vh'}>
-                <Stack spacing={[4, 6, 8, 12]} bg={'brand.800'} p={'33px 47px'} color={'brand.0'} borderRadius={'12px'} w={'400px'} border={'1px solid gray'}>
+                <Stack spacing={[4, 6, 8, 12]} bg='brand.800' p={'33px 47px'} color={'brand.0'} borderRadius={'12px'} w={'400px'} border={'1px solid gray'}>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Input placeholder={'Логин'}
                             type="text"
@@ -51,19 +56,19 @@ export function Login() {
                         {errors.email && <Text color={'red.400'}>{errors.email.message}</Text>}
                         <Input placeholder={'Пароль'}
                            mb={4}
-                           type="text"
-                            id="name"
-                            {...register('name',{
-                                required: "Имя обязательно",
+                           type="password"
+                            id="pass"
+                            {...register('pass',{
+                                required: "Пароль обязательно",
                                 pattern: {
-                                    value: /^[A-Za-z]+$/i,
-                                    message: "Некорректное имя"
+                                    value: /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,}/g,
+                                    message: "Некорректный пароль"
                                 }
                             })}
                         />
-                        {errors.name && <Text color={'red.400'}>{errors.name.message}</Text>}
+                        {errors.pass && <Text color={'red.400'}>{errors.pass.message}</Text>}
 
-                        <Button colorScheme='purple' >Зарегистрироваться</Button>
+                        <Button type='submit' w={'100%'} colorScheme='purple'>Войти</Button>
                     </form>
                 </Stack>
 
