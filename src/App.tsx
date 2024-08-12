@@ -23,6 +23,8 @@ function App() {
   };
 
   const todos: TodoList[] = filterTodo.length ? store.todos.filterByPriority(filterTodo) : store.todos.todoList
+  console.log(11111);
+  
 
     return (
         <>
